@@ -1,45 +1,68 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pañales</title>
-<style>
-body {
-  margin:0;padding:0;font-family:sans-serif;
-  background:linear-gradient(to right,#7B1E56,#D61A53,#FF6A3D,#FFB700);
-  color:#000;
-}
-header {
-  display:flex;justify-content:space-between;padding:10px;
-}
-button {
-  padding:8px;border:none;border-radius:10px;background:#fff;margin-left:5px;
-}
-.product-list {
-  max-width:900px;margin:auto;
-}
-.product-item {
-  background:#fff5;margin:10px;padding:10px;border-radius:10px;display:none;
-}
-.search-container {text-align:center;margin:10px;}
-#searchInput {padding:10px;font-size:16px;width:60%;border-radius:10px;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pañales</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: linear-gradient(to right, #7B1E56, #D61A53, #FF6A3D, #FFB700);
+      color: #000;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+    }
+    button {
+      padding: 8px;
+      border: none;
+      border-radius: 10px;
+      background: #fff;
+      margin-left: 5px;
+    }
+    .product-list {
+      max-width: 900px;
+      margin: auto;
+    }
+    .product-item {
+      background: #ffffffcc;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      display: none;
+    }
+    .search-container {
+      text-align: center;
+      margin: 10px;
+    }
+    #searchInput {
+      padding: 10px;
+      font-size: 16px;
+      width: 60%;
+      border-radius: 10px;
+    }
+  </style>
 </head>
 <body>
-<header>
-  <h1>Pañales</h1>
-  <div>
-    <button onclick="toggleCalculator()">Calculadora</button>
-    <button onclick="toggleLogin()">EDITAR</button>
+  <header>
+    <h1>Pañales</h1>
+    <div>
+      <button onclick="toggleCalculator()">Calculadora</button>
+      <button onclick="toggleLogin()">EDITAR</button>
+    </div>
+  </header>
+  <div class="search-container">
+    <input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="Buscar producto...">
   </div>
-</header>
-<div class="search-container"><input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="Buscar producto..."></div>
-<div class="product-list" id="productList"></div>
+  <div class="product-list" id="productList"></div>
 
-<script>
-let loggedIn = false;
-const products = [
+  <script>
+    let loggedIn = false;
+    const products = [
   { name: "HUGGIES CLASSIC PEQUEÑO X 30", price: 0 },
   { name: "HUGGIES CLASSIC TRIPLE PROT. M(68) G(60) XG(52) XXG(50)", price: 0 },
   { name: "HUGGIES PROTECT PLUS AHORRO PEQ X 50", price: 0 },
@@ -50,7 +73,7 @@ const products = [
   { name: "HUGGIES SUPREME PACK AHORRO M(68) G(60) XG(52) XXG(50) XXXG(48)", price: 0 },
   { name: "HUGGIES NATURAL CARE + TOALLA SIRENITA x48 M(68) G(60) XG(52) XXG(50) XXXG(48)", price: 0 },
   { name: "HUGGIES SUPREME / NATURAL CARE PACK MENSUAL XXG(96) XXXG(92)", price: 0 },
-  { name: "HUGGIES SUPREME PEQUEÑO X 50 'CR' AHORRO ( NUEVO)", price: 0 },
+  { name: "HUGGIES SUPREME PEQUEÑO X 50 CR AHORRO ( NUEVO)", price: 0 },
   { name: "HUGGIES SUPREME RN X 34", price: 0 },
   { name: "HUGGIES CLASIC + HUGGIES FLEX JUMBO P. G(80) XG(64) XXG (60)", price: 0 },
   { name: "HUGGIES PANTS NATURAL CARE XG (56) XXG (52)", price: 0 },
@@ -137,7 +160,7 @@ const products = [
   { name: "ADULT CARE ROPA INTERIOR M x 8", price: 0 },
   { name: "ADULT CARE ROPA INTERIOR G x 8", price: 0 },
   { name: "ADULT CARE ROPA INTERIOR XG x 8", price: 0 }
-    { name: "COMODIN ANAT 2DA SELECC. G (16)", price: 0 },
+  { name: "COMODIN ANAT 2DA SELECC. G (16)", price: 0 },
   { name: "COMODIN ANAT 2DA SELECC. EG(16)", price: 0 },
   { name: "HENNIA 2DA SELECCIÓN X 10 U.", price: 0 },
   { name: "BOMBACHA PLASTICA COMODIN TALLE 2,3,4", price: 0 },
@@ -186,15 +209,15 @@ const products = [
   { name: "COMODIN CUBRE COLCHON 1 PLAZA", price: 0 },
   { name: "COMODIN CUBRE COLCHON 2 PLAZAS", price: 0 },
   { name: "HUGGIES T/H TRIPLE PROTECCIÓN X 80", price: 0 },
-  { name: "PAMPERS WIPES X 48 "SIEMPRE LIMPIO"", price: 0 },
-  { name: "Q-SOFT " IDEAL" DOY PACK X 70 CLASICAS/ C. ALOE", price: 0 },
+  { name: "PAMPERS WIPES X 48 SIEMPRE LIMPIO", price: 0 },
+  { name: "Q-SOFT IDEAL DOY PACK X 70 CLASICAS/ C. ALOE", price: 0 },
   { name: "Q-SOFT DOY PACK X 50 CLASICAS-C/ALOE VIT C", price: 0 },
   { name: "Q-SOFT FLOW PACK PREMIUM X40 CLASICA y ALOE - S/TAPA", price: 0 },
   { name: "Q-SOFT FLOW PACK PREMIUM X40 C/OLEO CALCÁREO", price: 0 },
   { name: "Q-SOFT FLOW P. PREMIUM BABY x 50 ANTIPASPADURAS", price: 0 },
-  { name: "TOALLAS ESTRELLA BABY "C. DIARIO" FLOW P. (C/TAPA)", price: 0 },
-  { name: "TOALLAS ESTRELLA BABY "SENSIBLE" FLOW P. (C/TAPA)", price: 0 },
-  { name: "TOALLAS ESTRELLA BABY FLOW P. "RELAJANTE"", price: 0 },
+  { name: "TOALLAS ESTRELLA BABY C. DIARIO" FLOW P. (C/TAPA)", price: 0 },
+  { name: "TOALLAS ESTRELLA BABY SENSIBLE FLOW P. (C/TAPA)", price: 0 },
+  { name: "TOALLAS ESTRELLA BABY FLOW P. RELAJANTE, price: 0 },
   { name: "Q-SOFT ADULTOS x 40U", price: 0 },
   { name: "COMODIN TOALLA ADULTO X 60", price: 0 },
   { name: "NONISEC TOALLA HÚMEDA ADULTO ALOE VERA X 60", price: 0 },
@@ -226,8 +249,8 @@ const products = [
   { name: "ÓLEO CALCAREO ESTRELLA X 500 C/MANZ. (T. AMARILLA)", price: 0 },
   { name: "ÓLEO CALCAREO ESTRELLA X 950", price: 0 },
   { name: "ÓLEO CALCAREO ESTRELLA S/FRAGANCIA X 500 (TAPA NAR.)", price: 0 },
-  { name: "OLEO CALCÁREO " BUNNY BABY " X 1000ml ( NUEVOS )", price: 0 },
-  { name: "OLEO CALCÁREO " BUNNY BABY " X 500 ml ( NUEVOS )", price: 0 },
+  { name: "OLEO CALCÁREO BUNNY BABY  X 1000ml ( NUEVOS )", price: 0 },
+  { name: "OLEO CALCÁREO BUNNY BABY  X 500 ml ( NUEVOS )", price: 0 },
   { name: "ALGODONES E HISOPOS", price: 0 },
   { name: "DONCELLA X 70", price: 0 },
   { name: "DONCELLA X 140", price: 0 },
@@ -245,21 +268,21 @@ const products = [
   { name: "ESTRELLLA SUPER X 100 GS", price: 0 },
   { name: "ESTRELLA CLASICO X 140 GS", price: 0 },
   { name: "ESTRELLA PRE CORTADO X100 GS", price: 0 },
-  { name: "ALGODÓN "CARESS" x 500 GR", price: 0 },
-  { name: "FECULA BEBE ALGABO "EXTRA SUAVE" 200gr", price: 0 },
+  { name: "ALGODÓN CARESS"x 500 GR", price: 0 },
+  { name: "FECULA BEBE ALGABO EXTRA SUAVE 200gr", price: 0 },
   { name: "CANNON EAU DE COLOGNE DANIELLE X 90ML", price: 0 },
   { name: "CANNON EAU DE COLOGNE JOLIE DANIELLE x 90 ml", price: 0 },
-  { name: "CANNON "JABONERA" Con Jabón de 75gr.", price: 0 },
+  { name: "CANNON JABONERA Con Jabón de 75gr.", price: 0 },
   { name: "CANNON ESTUCHE COMBINADO (COLONIA MAS PELUCHE CONEJO)", price: 0 },
   { name: "MAMADERA DE REGALO DISPITA - C/ BOLSA PARA REGALO", price: 0 },
   { name: "PELELA AUTITO/SAPITO/OSITO", price: 0 },
-  { name: "REPELENTE "INFLUENCIA" X 200ML EXTRA DURACIÓN", price: 0 },
-  { name: "REPELENTE "VAIS" GEL P/NIÑOS + 3 MESES 100 ML", price: 0 },
-  { name: "REPELENTE "VAIS" AEROSOL 140 ML", price: 0 },
-  { name: "REPELENTE EXTRA DURACION "VAIS" X 200ML", price: 0 },
-  { name: "REPELENTE "VAIS" SPRAY x 200ML", price: 0 },
-  { name: "REPELENTE "VAIS" CREMA EXTRA DURACION 220GS", price: 0 },
-  { name: "REPELENTE "VAIS" AEROSOL EXTRA DURACION 140 ML", price: 0 },
+  { name: "REPELENTE INFLUENCIA X 200ML EXTRA DURACIÓN", price: 0 },
+  { name: "REPELENTE VAIS GEL P/NIÑOS + 3 MESES 100 ML", price: 0 },
+  { name: "REPELENTE VAIS AEROSOL 140 ML", price: 0 },
+  { name: "REPELENTE EXTRA DURACION VAIS X 200ML", price: 0 },
+  { name: "REPELENTE VAIS SPRAY x 200ML", price: 0 },
+  { name: "REPELENTE VAIS CREMA EXTRA DURACION 220GS", price: 0 },
+  { name: "REPELENTE VAIS AEROSOL EXTRA DURACION 140 ML", price: 0 },
   { name: "BAÑO FÁCIL MANZANILLA (20cm x 20cm) X10U", price: 0 },
   { name: "BAÑO FÁCIL ALOE VERA (20cm x 20cm) X10U", price: 0 },
   { name: "ESPONJA JABONOSA NONISEC C/ALOE Y C/MANZANILLA", price: 0 },
@@ -280,44 +303,56 @@ const products = [
   { name: "PAULA CAHEN D ANVERS LUZ 60 ML C/VAPORIZADOR", price: 0 },
 ];
 
-function renderProducts() {
-  let list = document.getElementById("productList");
-  list.innerHTML = "";
-  products.forEach((p,i)=>{
-    let el = document.createElement("div");
-    el.className="product-item";
-    el.id="product_"+i;
-    el.innerHTML=`<b>${p.name}</b><br>Precio: $${(p.price*1.4).toFixed(2)}<br>
-    Cantidad: <input type='number' id='qty_${i}' value='1' min='1'>
-    <button onclick='addToCalc(${i})'>Agregar</button>`;
-    list.appendChild(el);
-  });
-}
-function filterProducts(){
-  let val=document.getElementById("searchInput").value.toLowerCase();
-  products.forEach((p,i)=>{
-    let el=document.getElementById("product_"+i);
-    el.style.display=p.name.toLowerCase().includes(val)&&val!==""?"block":"none";
-  });
-}
-function toggleLogin(){
-  if(loggedIn){
-    alert("Sesión cerrada");
-    loggedIn=false;
+    function renderProducts() {
+      let list = document.getElementById("productList");
+      list.innerHTML = "";
+      products.forEach((p, i) => {
+        let el = document.createElement("div");
+        el.className = "product-item";
+        el.id = "product_" + i;
+        el.innerHTML = `<b>${p.name}</b><br>Precio: $${(p.price * 1.4).toFixed(2)}<br>
+        Cantidad: <input type='number' id='qty_${i}' value='1' min='1'>
+        <button onclick='addToCalc(${i})'>Agregar</button>`;
+        list.appendChild(el);
+      });
+    }
+
+    function filterProducts() {
+      let val = document.getElementById("searchInput").value.toLowerCase();
+      products.forEach((p, i) => {
+        let el = document.getElementById("product_" + i);
+        el.style.display = p.name.toLowerCase().includes(val) && val !== "" ? "block" : "none";
+      });
+    }
+
+    function toggleLogin() {
+      if (loggedIn) {
+        alert("Sesión cerrada");
+        loggedIn = false;
+        renderProducts();
+        return;
+      }
+      let user = prompt("Usuario:");
+      let pass = prompt("Clave:");
+      if (user === "259" && pass === "emi2003") {
+        alert("Sesión iniciada correctamente");
+        loggedIn = true;
+        document.getElementById("searchInput").style.display = "none";
+      } else {
+        alert("Credenciales incorrectas");
+      }
+    }
+
+    function toggleCalculator() {
+      alert("Calculadora activada (aún no implementada)");
+    }
+
+    function addToCalc(i) {
+      const qty = document.getElementById("qty_" + i).value;
+      alert(`Agregado: ${qty} x ${products[i].name}`);
+    }
+
     renderProducts();
-    return;
-  }
-  let user=prompt("Usuario:");
-  let pass=prompt("Clave:");
-  if(user==="259"&&pass==="emi2003"){
-    alert("Sesión iniciada correctamente");
-    loggedIn=true;
-    document.getElementById("searchInput").style.display="none";
-  } else {
-    alert("Credenciales incorrectas");
-  }
-}
-renderProducts();
-</script>
+  </script>
 </body>
 </html>
