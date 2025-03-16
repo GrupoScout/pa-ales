@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pañales</title>
+<style>
+body {
+  margin:0;padding:0;font-family:sans-serif;
+  background:linear-gradient(to right,#7B1E56,#D61A53,#FF6A3D,#FFB700);
+  color:#000;
+}
+header {
+  display:flex;justify-content:space-between;padding:10px;
+}
+button {
+  padding:8px;border:none;border-radius:10px;background:#fff;margin-left:5px;
+}
+.product-list {
+  max-width:900px;margin:auto;
+}
+.product-item {
+  background:#fff5;margin:10px;padding:10px;border-radius:10px;display:none;
+}
+.search-container {text-align:center;margin:10px;}
+#searchInput {padding:10px;font-size:16px;width:60%;border-radius:10px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Pañales</h1>
+  <div>
+    <button onclick="toggleCalculator()">Calculadora</button>
+    <button onclick="toggleLogin()">EDITAR</button>
+  </div>
+</header>
+<div class="search-container"><input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="Buscar producto..."></div>
+<div class="product-list" id="productList"></div>
+
+<script>
+let loggedIn = false;
+const products = [
+  { name: "HUGGIES CLASSIC PEQUEÑO X 30", price: 4794.61 },
+  { name: "HUGGIES CLASSIC TRIPLE PROT. M(68) G(60) XG(52) XXG(50)", price: 12683.35 },
+  { name: "HUGGIES PROTECT PLUS AHORRO PEQ X 50", price: 10213.6 },
+  { name: "PAMPERS BABYSAN P (52)", price: 9233.88 },
+  { name: "PAMPERS BABYSAN "NUEVO" HP M(72) G(72) XG(58) XXG(54)", price: 16254.69 },
+  { name: "PAÑAL L. COTTON HIPERPACK P(40) M(36) G(32) XG(28) XXG(26)", price: 5743.54 },
+  { name: "BABYSEC ULTRA JUMBO S.PACK M(68) G(60) XG(52) XXG(52)", price: 11230.0 },
+  { name: "PAÑAL ESTRELLA MEGA PEQUEÑO 6X30", price: 5400.16 },
+  { name: "PROTECTOR SOLAR "COCO BEACH" FPS 50 POMO 130 ml.", price: 9128.0 },
+  { name: "HENNIA PAÑAL RECTO G X 20", price: 8010.79 },
+  { name: "COMODÍN CLÁSICO GRANDE X10", price: 5041.85 },
+  { name: "PAÑAL NONISEC GDE X10", price: 5313.77 },
+  { name: "NONINO PLUS ELASTIZADO G X 16", price: 12217.0 },
+  { name: "COMODÍN ANAT. GDE X 8", price: 13175.0 },
+  { name: "COMODIN ANAT 2DA SELECC. G (16)", price: 12631.71 },
+  { name: "PAÑALES JUVENILES ELASTIZADOS COMODÍN ANAT. CHICO X 10", price: 13655.72 },
+  { name: "APOSITO POST-PARTO HUGGIES MAMA X 10", price: 15596.54 },
+  { name: "ZALEAS NONINO X 10", price: 5486.19 },
+  { name: "TOALLAS HÚMEDAS HUGGIES T/H TRIPLE PROTECCIÓN X 80", price: 5737.74 },
+  { name: "TOALLAS HIGIÉNICAS DONCELLA TOALLA C/ALAS POCKET X8", price: 6536.77 },
+  { name: "PAPEL HIGIENICO 4 x 30m. S/H Bco", price: 3057.32 },
+  { name: "OLEO CALCAREO BABY BASIC OLEO CALCAREO X 250", price: 6114.62 },
+  { name: "ALGODONES DONCELLA X 70", price: 3269.88 },
+  { name: "LINEA CANNON EAU DE COLOGNE DANIELLE X 90ML", price: 6539.77 },
+  { name: "VARIOS MAMADERA DE REGALO DISPITA", price: 7522.14 },
+  { name: "PAÑOS JABONOSOS BAÑO FÁCIL MANZANILLA X10U", price: 14982.12 },
+];
+
+function renderProducts() {
+  let list = document.getElementById("productList");
+  list.innerHTML = "";
+  products.forEach((p,i)=>{
+    let el = document.createElement("div");
+    el.className="product-item";
+    el.id="product_"+i;
+    el.innerHTML=`<b>${p.name}</b><br>Precio: $${(p.price*1.4).toFixed(2)}<br>
+    Cantidad: <input type='number' id='qty_${i}' value='1' min='1'>
+    <button onclick='addToCalc(${i})'>Agregar</button>`;
+    list.appendChild(el);
+  });
+}
+function filterProducts(){
+  let val=document.getElementById("searchInput").value.toLowerCase();
+  products.forEach((p,i)=>{
+    let el=document.getElementById("product_"+i);
+    el.style.display=p.name.toLowerCase().includes(val)&&val!==""?"block":"none";
+  });
+}
+function toggleLogin(){
+  if(loggedIn){
+    alert("Sesión cerrada");
+    loggedIn=false;
+    renderProducts();
+    return;
+  }
+  let user=prompt("Usuario:");
+  let pass=prompt("Clave:");
+  if(user==="259"&&pass==="emi2003"){
+    alert("Sesión iniciada correctamente");
+    loggedIn=true;
+    document.getElementById("searchInput").style.display="none";
+  } else {
+    alert("Credenciales incorrectas");
+  }
+}
+renderProducts();
+</script>
+</body>
+</html>
