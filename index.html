@@ -1,111 +1,107 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Farmacia Pintar</title>
   <style>
     :root {
-      --color1: #F95F62;  /* Coral */
-      --color2: #F5427E;  /* Rosa fuerte */
-      --color3: #B551CE;  /* Violeta */
-      --color4: #7A5DBE;  /* Púrpura */
-      --color5: #5894F6;  /* Azul */
-      --color6: #3CD3F0;  /* Celeste */
-      --color7: #25C5C0;  /* Turquesa */
-      --bg-color: #F9F9F9;
-      --text-color: #333;
+      --coral: #f04e4e;
+      --pink: #f04e85;
+      --purple: #b44edf;
+      --violet: #7c5edc;
+      --blue-purple: #6778d3;
+      --blue: #4da7f0;
+      --skyblue: #3ccaf0;
+      --turquoise: #27c3ce;
+      --aqua: #23b7b1;
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--bg-color);
+      font-family: Arial, sans-serif;
+      background-color: var(--skyblue);
       margin: 0;
       padding: 20px;
-      color: var(--text-color);
+      color: #222;
     }
 
     header {
+      background-color: var(--aqua);
+      padding: 15px;
+      border-radius: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: var(--color6);
-      padding: 12px 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
     #searchBar {
       width: 300px;
       padding: 10px;
-      font-size: 16px;
-      border: 1px solid var(--color5);
       border-radius: 8px;
+      border: 1px solid #ccc;
     }
 
-    header button {
-      background-color: var(--color5);
+    button {
+      background-color: var(--coral);
       color: white;
       border: none;
       padding: 10px 15px;
+      margin-left: 10px;
       border-radius: 8px;
       cursor: pointer;
-      margin-left: 10px;
     }
 
-    header button:hover {
-      background-color: var(--color3);
+    button:hover {
+      background-color: var(--pink);
     }
 
-    .separator {
-      background-color: var(--color2);
+    .brand-separator {
+      background-color: var(--purple);
       color: white;
-      font-weight: bold;
       padding: 10px;
-      margin: 20px 0 10px;
-      border-radius: 10px;
-      text-transform: uppercase;
+      margin-top: 20px;
+      font-weight: bold;
+      border-radius: 8px;
     }
 
     .product {
-      border: 1px solid var(--color7);
       background-color: white;
+      border: 1px solid #ccc;
       padding: 12px;
-      border-radius: 10px;
       margin-bottom: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 10px;
     }
 
     #calculator {
       display: none;
       background-color: white;
-      border: 2px solid var(--color6);
-      border-radius: 12px;
       padding: 15px;
       margin-top: 20px;
+      border-radius: 10px;
+      border: 2px solid var(--violet);
     }
 
     .ticket {
       font-family: monospace;
       font-size: 14px;
-      border: 2px dashed var(--color3);
+      border: 1px solid var(--blue);
       padding: 10px;
       margin-top: 20px;
+      width: 300px;
       background-color: white;
       border-radius: 10px;
-      width: 320px;
     }
 
     .ticket-header, .ticket-footer {
       text-align: center;
-      border-bottom: 1px solid var(--color4);
+      border-bottom: 1px solid var(--blue);
       margin-bottom: 5px;
     }
 
     .ticket-product {
+      border-top: 1px solid var(--blue);
       margin-top: 5px;
-      border-top: 1px dashed var(--color5);
       padding-top: 5px;
     }
 
@@ -117,6 +113,7 @@
   </style>
 </head>
 <body>
+
   <header>
     <input type="text" id="searchBar" placeholder="Buscar producto...">
     <div>
@@ -131,13 +128,13 @@
     <h2>Calculadora</h2>
     <div id="calculatorItems"></div>
     <h3 id="totalAmount">TOTAL: $0.00</h3>
-    <button onclick="printTicket()">Imprimir ticket</button>
+    <button onclick="printTicket()">Imprimir</button>
   </div>
 
   <div id="ticketContainer"></div>
 
   <script>
-const products = [
+   const products = [
  { name: "HUGGIES CLASSIC PEQUEÑO X 30", price: 0 },
   { name: "HUGGIES CLASSIC TRIPLE PROT. M(68) G(60) XG(52) XXG(50)", price: 0 },
   { name: "HUGGIES PROTECT PLUS AHORRO PEQ X 50", price: 0 },
@@ -377,89 +374,89 @@ const products = [
   { name: "PAULA CAHEN D ANVERS ALMA 60ML C/VAPORIZADOR", price: 0 },
   { name: "PAULA CAHEN D ANVERS LUZ 60 ML C/VAPORIZADOR", price: 0 }
     ];
-
     const cart = {};
     let isAdmin = false;
     let inactivityTimer;
 
-    function getBrand(name) {
-      const brands = ["HUGGIES", "PAMPERS", "BABYSEC", "PAÑAL", "NONINO", "COMODIN", "PLENITUD", "DONCELLA", "INDASEC", "Q-SOFT", "ADULT CARE", "HENNIA"];
-      return brands.find(brand => name.toUpperCase().includes(brand)) || "Otros";
-    }
-
     function loadProducts() {
-      const container = document.getElementById("products");
-      container.innerHTML = "";
-      const query = document.getElementById("searchBar").value.toLowerCase();
-      let lastBrand = "";
+      const container = document.getElementById('products');
+      container.innerHTML = '';
 
-      products.forEach((p, i) => {
-        if (!query || p.name.toLowerCase().includes(query)) {
-          const brand = getBrand(p.name);
-          if (brand !== lastBrand) {
-            const sep = document.createElement("div");
-            sep.className = "separator";
-            sep.textContent = brand;
-            container.appendChild(sep);
-            lastBrand = brand;
+      const query = document.getElementById('searchBar').value.toLowerCase();
+      let currentBrand = "";
+
+      products.forEach((product, index) => {
+        if (!query || product.name.toLowerCase().includes(query)) {
+          let brand = product.name.split(' ')[0].toUpperCase();
+          if (brand !== currentBrand) {
+            currentBrand = brand;
+            const separator = document.createElement('div');
+            separator.className = 'brand-separator';
+            separator.textContent = brand;
+            container.appendChild(separator);
           }
 
-          const div = document.createElement("div");
-          div.className = "product";
-          const displayPrice = (p.price * 1.4).toFixed(2);
+          const div = document.createElement('div');
+          div.className = 'product';
+          const displayPrice = (product.price * 1.4).toFixed(2);
           div.innerHTML = `
-            <strong>${p.name}</strong><br>
+            <strong>${product.name}</strong><br>
             Precio: $${displayPrice}<br>
-            <button onclick="addToCart(${i})">Agregar a la cuenta</button>
-            ${isAdmin ? `<button onclick="editProduct(${i})">Editar</button>` : ""}
+            <button onclick="addToCart(${index})">Agregar a la cuenta</button>
+            ${isAdmin ? `<button onclick="editProduct(${index})">Editar</button>` : ''}
           `;
           container.appendChild(div);
         }
       });
     }
 
-    function addToCart(i) {
+    function addToCart(index) {
       if (isAdmin) return alert("Cierre sesión para operar.");
-      const p = products[i];
-      if (!cart[p.name]) cart[p.name] = { ...p, quantity: 0 };
-      cart[p.name].quantity++;
+      const product = products[index];
+      const id = product.name;
+      if (!cart[id]) cart[id] = { ...product, quantity: 0 };
+      cart[id].quantity++;
       updateCalculator();
     }
 
     function updateCalculator() {
-      const container = document.getElementById("calculatorItems");
-      container.innerHTML = "";
+      const container = document.getElementById('calculatorItems');
+      container.innerHTML = '';
       let total = 0;
-      for (let name in cart) {
-        const item = cart[name];
+      for (let id in cart) {
+        const item = cart[id];
         const unit = (item.price * 1.4).toFixed(2);
         const subtotal = (item.quantity * item.price * 1.4).toFixed(2);
         total += parseFloat(subtotal);
-        container.innerHTML += `<div><strong>${item.name}</strong><br> Cantidad: ${item.quantity}<br> Unit: $${unit}<br> Total: $${subtotal}</div><hr>`;
+        container.innerHTML += `<div><strong>${item.name}</strong><br>Cantidad: ${item.quantity}<br>Precio unitario: $${unit}<br>Subtotal: $${subtotal}</div><hr>`;
       }
-      document.getElementById("totalAmount").textContent = "TOTAL: $" + total.toFixed(2);
+      document.getElementById('totalAmount').textContent = `TOTAL: $${total.toFixed(2)}`;
     }
 
     function toggleCalculator() {
-      const calc = document.getElementById("calculator");
-      calc.style.display = calc.style.display === "none" ? "block" : "none";
+      const calc = document.getElementById('calculator');
+      calc.style.display = calc.style.display === 'none' ? 'block' : 'none';
     }
 
     function printTicket() {
-      const container = document.getElementById("ticketContainer");
+      const container = document.getElementById('ticketContainer');
       const now = new Date();
-      const time = now.toLocaleTimeString("es-AR");
-      const date = now.toLocaleDateString("es-AR");
-      let ticket = `<div class="ticket"><div class="ticket-header"><strong>FARMACIA PINTAR</strong><br>Av Remigio Lopez 2393 - San Miguel<br>Fecha: ${date} - Hora: ${time}</div>`;
+      const time = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: true });
+      const date = now.toLocaleDateString('es-AR');
+      let ticket = `<div class="ticket"><div class="ticket-header">
+        <strong>FARMACIA PINTAR</strong><br>SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>TEL: 4455502<br>
+        FECHA: ${date} - HORA: ${time}</div><small>DOCUMENTO NO VÁLIDO COMO FACTURA FISCAL</small>`;
       let total = 0;
-      for (let name in cart) {
-        const item = cart[name];
-        const unit = (item.price * 1.4).toFixed(2);
-        const subtotal = (item.quantity * item.price * 1.4).toFixed(2);
-        ticket += `<div class="ticket-product">${item.name}<br>Cant: ${item.quantity} | $${unit} | Sub: $${subtotal}</div>`;
+      for (let id in cart) {
+        const item = cart[id];
+        const unit = (item.price).toFixed(2);
+        const subtotal = (item.quantity * item.price).toFixed(2);
+        ticket += `<div class="ticket-product">${item.name}<br>Cant: ${item.quantity} | Unit: $${unit} | Subtotal: $${subtotal}</div>`;
         total += parseFloat(subtotal);
       }
-      ticket += `<h3>TOTAL: $${total.toFixed(2)}</h3><div class="small-text">Documento no válido como factura fiscal. Reclamos solo con ticket en mano.</div><div class="ticket-footer">Gracias por su compra!</div></div>`;
+      ticket += `<h3>TOTAL: $${total.toFixed(2)}</h3>
+      <div class="small-text">IMPORTANTE: EL PRECIO ES VÁLIDO POR 12HS. PASADAS LAS 12HS, EL PRECIO PODRÍA VARIAR. RECLAMOS SOLO CON TICKET EN MANO.</div>
+      <div class="ticket-footer">GRACIAS POR SU COMPRA<br><a href="https://turnosdefarmacias.info">turnosdefarmacias.info</a></div></div>`;
       container.innerHTML = ticket;
       window.print();
     }
@@ -468,19 +465,19 @@ const products = [
       if (isAdmin) {
         isAdmin = false;
         clearTimeout(inactivityTimer);
-        alert("Sesión cerrada.");
+        alert("Sesión cerrada");
         loadProducts();
         return;
       }
-      const u = prompt("Usuario:");
-      const p = prompt("Contraseña:");
-      if (u === "259" && p === "emi2003") {
+      const user = prompt("Usuario:");
+      const pass = prompt("Contraseña:");
+      if (user === "259" && pass === "emi2003") {
         isAdmin = true;
-        alert("Sesión iniciada.");
+        alert("Modo editor activado");
         startInactivityTimer();
         loadProducts();
       } else {
-        alert("Datos incorrectos");
+        alert("Usuario o contraseña incorrectos");
       }
     }
 
@@ -488,15 +485,15 @@ const products = [
       clearTimeout(inactivityTimer);
       inactivityTimer = setTimeout(() => {
         isAdmin = false;
-        alert("Sesión cerrada por inactividad.");
+        alert("Sesión cerrada por inactividad");
         loadProducts();
-      }, 15 * 60 * 1000);
+      }, 900000); // 15 min
     }
 
-    function editProduct(i) {
-      const newPrice = prompt("Nuevo precio base:", products[i].price);
+    function editProduct(index) {
+      const newPrice = prompt("Nuevo precio base:", products[index].price);
       if (newPrice) {
-        products[i].price = parseFloat(newPrice);
+        products[index].price = parseFloat(newPrice);
         loadProducts();
       }
     }
@@ -506,3 +503,5 @@ const products = [
   </script>
 </body>
 </html>
+
+      
