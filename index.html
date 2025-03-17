@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Farmacia Pintar</title>
+  <title>PRODUCTOS DE PAÑALERA FARMACIA PINTAR</title>
   <style>
     :root {
       --coral: #f04e4e;
@@ -82,33 +82,20 @@
       border: 2px solid var(--violet);
     }
 
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
     .ticket {
-      font-family: monospace;
-      font-size: 14px;
-      border: 1px solid var(--blue);
-      padding: 10px;
       margin-top: 20px;
-      width: 300px;
-      background-color: white;
-      border-radius: 10px;
-    }
-
-    .ticket-header, .ticket-footer {
-      text-align: center;
-      border-bottom: 1px solid var(--blue);
-      margin-bottom: 5px;
-    }
-
-    .ticket-product {
-      border-top: 1px solid var(--blue);
-      margin-top: 5px;
-      padding-top: 5px;
-    }
-
-    .small-text {
-      font-size: 10px;
-      color: gray;
-      text-align: center;
     }
   </style>
 </head>
@@ -116,26 +103,38 @@
   <header>
     <input type="text" id="searchBar" placeholder="Buscar producto...">
     <div>
-      <button id="toggleCalcBtn">Calculadora</button>
-      <button id="loginBtn">Iniciar sesión</button>
+      <button onclick="toggleCalculator()">Calculadora</button>
+      <button onclick="loginPrompt()">Iniciar sesión</button>
     </div>
   </header>
 
+  <h1>PRODUCTOS DE PAÑALERA FARMACIA PINTAR</h1>
   <div id="products"></div>
+
   <div id="calculator">
-    <h1 style="margin-top: 30px; font-size: 28px; text-align: center; color: var(--violet); font-weight: bold;">
-  PRODUCTOS DE PAÑALERA FARMACIA PINTAR
-   <h2>Calculadora</h2>
-    <div id="calculatorItems"></div>
-    <h3 id="totalAmount">TOTAL: $0.00</h3>
-    <button onclick="printTicket()">Imprimir</button>
+    <h2>Calculadora</h2>
+    <table>
+      <thead>
+        <tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Total</th><th>Acción</th></tr>
+      </thead>
+      <tbody id="calculadora-body"></tbody>
+    </table>
+    <div><strong>Total: $<span id="calculadora-total">0.00</span></strong></div>
+    <div>
+      <h3>Agregar Producto Manualmente</h3>
+      <input type="text" id="manual-product-name" placeholder="Nombre">
+      <input type="number" id="manual-product-quantity" placeholder="Cantidad" min="1">
+      <input type="number" id="manual-product-price" placeholder="Precio Unitario" min="0" step="0.01">
+      <button onclick="addManualProduct()">Agregar</button>
+    </div>
+    <button onclick="printTicket()">Imprimir Ticket</button>
   </div>
-  <div id="ticketContainer"></div>
+
+  <div class="ticket" id="ticketContainer"></div>
 
   <script>
-    console.log("Script funcionando");
+    const products = [
 
-const products = [
  { name: "HUGGIES CLASSIC PEQUEÑO X 30", price: 0 },
   { name: "HUGGIES CLASSIC TRIPLE PROT. M(68) G(60) XG(52) XXG(50)", price: 0 },
   { name: "HUGGIES PROTECT PLUS AHORRO PEQ X 50", price: 0 },
@@ -377,130 +376,96 @@ const products = [
     ];
 
 
-    const cart = {};
+    const cart = [];
     let isAdmin = false;
     let inactivityTimer;
 
     function loadProducts() {
-      const container = document.getElementById('products');
-      container.innerHTML = '';
-      const query = document.getElementById('searchBar').value.toLowerCase();
+      const container = document.getElementById("products");
+      container.innerHTML = "";
+      const query = document.getElementById("searchBar").value.toLowerCase();
       let currentBrand = "";
-      products.forEach((product, index) => {
-        if (!query || product.name.toLowerCase().includes(query)) {
-          let brand = product.name.split(' ')[0].toUpperCase();
+      products.forEach((p, index) => {
+        if (!query || p.name.toLowerCase().includes(query)) {
+          let brand = p.name.split(" ")[0].toUpperCase();
           if (brand !== currentBrand) {
             currentBrand = brand;
-            const separator = document.createElement('div');
-            separator.className = 'brand-separator';
-            separator.textContent = brand;
-            container.appendChild(separator);
+            container.innerHTML += `<div class='brand-separator'>${brand}</div>`;
           }
-          const div = document.createElement('div');
-          div.className = 'product';
-          const displayPrice = (product.price * 1.4).toFixed(2);
-          div.innerHTML = `
-            <strong>${product.name}</strong><br>
-            Precio: $${displayPrice}<br>
-            <button onclick="addToCart(${index})">Agregar a la cuenta</button>
-            ${isAdmin ? `<button onclick="editProduct(${index})">Editar</button>` : ''}
-          `;
-          container.appendChild(div);
+          container.innerHTML += `<div class='product'><strong>${p.name}</strong><br>Precio: $${(p.price * 1.4).toFixed(2)}<br><button onclick="addToCart(${index})">Agregar</button>${isAdmin ? `<button onclick="editProduct(${index})">Editar</button>` : ''}</div>`;
         }
       });
     }
 
     function addToCart(index) {
-      if (isAdmin) return alert("Cierre sesión para operar.");
+      if (isAdmin) return alert("Cierre sesión para operar");
       const product = products[index];
-      const id = product.name;
-      if (!cart[id]) cart[id] = { ...product, quantity: 0 };
-      cart[id].quantity++;
-      updateCalculator();
+      const existing = cart.find(i => i.Producto === product.name);
+      if (existing) existing.Unidades++;
+      else cart.push({ Producto: product.name, Unidades: 1, Precio: product.price * 1.4, Total: product.price * 1.4 });
+      updateCart();
     }
 
-    function updateCalculator() {
-      const container = document.getElementById('calculatorItems');
-      container.innerHTML = '';
-      let total = 0;
-      for (let id in cart) {
-        const item = cart[id];
-        const unit = (item.price * 1.4).toFixed(2);
-        const subtotal = (item.quantity * item.price * 1.4).toFixed(2);
-        total += parseFloat(subtotal);
-        container.innerHTML += `<div><strong>${item.name}</strong><br>Cantidad: ${item.quantity}<br>Precio unitario: $${unit}<br>Subtotal: $${subtotal}</div><hr>`;
+    function addManualProduct() {
+      const name = document.getElementById("manual-product-name").value.toUpperCase();
+      const qty = parseInt(document.getElementById("manual-product-quantity").value);
+      const price = parseFloat(document.getElementById("manual-product-price").value);
+      if (name && qty && price) {
+        cart.push({ Producto: name, Unidades: qty, Precio: price, Total: qty * price });
+        updateCart();
       }
-      document.getElementById('totalAmount').textContent = `TOTAL: $${total.toFixed(2)}`;
     }
 
-    function toggleCalculator() {
-      const calc = document.getElementById('calculator');
-      calc.style.display = calc.style.display === 'none' ? 'block' : 'none';
+    function updateCart() {
+      const tbody = document.getElementById("calculadora-body");
+      tbody.innerHTML = cart.map(i => `<tr><td>${i.Producto}</td><td>${i.Unidades}</td><td>$${i.Precio.toFixed(2)}</td><td>$${(i.Unidades * i.Precio).toFixed(2)}</td><td><button onclick="removeCartItem('${i.Producto}')">Eliminar</button></td></tr>`).join('');
+      document.getElementById("calculadora-total").innerText = cart.reduce((s, i) => s + (i.Unidades * i.Precio), 0).toFixed(2);
+    }
+
+    function removeCartItem(name) {
+      const index = cart.findIndex(i => i.Producto === name);
+      if (index !== -1) cart.splice(index, 1);
+      updateCart();
     }
 
     function printTicket() {
-      const container = document.getElementById('ticketContainer');
       const now = new Date();
-      const time = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: true });
-      const date = now.toLocaleDateString('es-AR');
-      let ticket = `<div class="ticket"><div class="ticket-header">
-        <strong>FARMACIA PINTAR</strong><br>SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>TEL: 4455502<br>
-        FECHA: ${date} - HORA: ${time}</div><small>DOCUMENTO NO VÁLIDO COMO FACTURA FISCAL</small>`;
-      let total = 0;
-      for (let id in cart) {
-        const item = cart[id];
-        const unit = (item.price).toFixed(2);
-        const subtotal = (item.quantity * item.price).toFixed(2);
-        ticket += `<div class="ticket-product">${item.name}<br>Cant: ${item.quantity} | Unit: $${unit} | Subtotal: $${subtotal}</div>`;
-        total += parseFloat(subtotal);
-      }
-      ticket += `<h3>TOTAL: $${total.toFixed(2)}</h3>
-      <div class="small-text">IMPORTANTE: EL PRECIO ES VÁLIDO POR 12HS. PASADAS LAS 12HS, EL PRECIO PODRÍA VARIAR. RECLAMOS SOLO CON TICKET EN MANO.</div>
-      <div class="ticket-footer">GRACIAS POR SU COMPRA<br><a href="https://turnosdefarmacias.info">turnosdefarmacias.info</a></div></div>`;
-      container.innerHTML = ticket;
+      const fecha = now.toLocaleDateString();
+      const hora = now.toLocaleTimeString();
+      const total = cart.reduce((s, i) => s + i.Unidades * i.Precio, 0).toFixed(2);
+      const ticket = `
+        <div style="width:80mm; border:2px solid black; padding:10px; font-family:Arial; font-size:12px;">
+          <div style="border:2px solid black; text-align:center; padding:5px; margin-bottom:10px">
+            <b style="font-size:16px;">FARMACIA PINTAR</b><br>SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>TEL: 4455502 - WHATSAPP: 1153183466<br><b>COMPROBANTE NO FISCAL</b><br>FECHA: ${fecha} - HORA: ${hora}
+          </div>
+          <div style="border:2px solid black; padding:5px;">
+            ${cart.map(i => `<div style="border-bottom:1px solid black; margin-bottom:5px;"><b>${i.Producto}</b><br>Cantidad: ${i.Unidades}<br>Precio Unitario: $${i.Precio.toFixed(2)}<br><b>Total: $${(i.Unidades * i.Precio).toFixed(2)}</b></div>`).join('')}
+            <div style="text-align:right; margin-top:10px;"><b>TOTAL: $${total}</b></div>
+          </div>
+          <div style="border:2px solid black; padding:5px; text-align:center; font-size:10px;">
+            IMPORTANTE: EL PRECIO ES VÁLIDO POR 12HS.<br>RECLAMOS SOLO CON TICKET EN MANO.<br>GRACIAS POR SU COMPRA
+          </div>
+        </div>`;
+      document.getElementById("ticketContainer").innerHTML = ticket;
       window.print();
     }
 
     function loginPrompt() {
-      if (isAdmin) {
-        isAdmin = false;
-        clearTimeout(inactivityTimer);
-        alert("Sesión cerrada");
-        loadProducts();
-        return;
-      }
       const user = prompt("Usuario:");
       const pass = prompt("Contraseña:");
       if (user === "259" && pass === "emi2003") {
         isAdmin = true;
         alert("Modo editor activado");
-        startInactivityTimer();
         loadProducts();
-      } else {
-        alert("Usuario o contraseña incorrectos");
-      }
+      } else alert("Usuario o contraseña incorrectos");
     }
 
-    function startInactivityTimer() {
-      clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(() => {
-        isAdmin = false;
-        alert("Sesión cerrada por inactividad");
-        loadProducts();
-      }, 900000);
-    }
-
-    function editProduct(index) {
-      const newPrice = prompt("Nuevo precio base:", products[index].price);
-      if (newPrice) {
-        products[index].price = parseFloat(newPrice);
-        loadProducts();
-      }
+    function toggleCalculator() {
+      const c = document.getElementById("calculator");
+      c.style.display = c.style.display === "none" ? "block" : "none";
     }
 
     document.getElementById("searchBar").addEventListener("input", loadProducts);
-    document.getElementById("toggleCalcBtn").addEventListener("click", toggleCalculator);
-    document.getElementById("loginBtn").addEventListener("click", loginPrompt);
     loadProducts();
   </script>
 </body>
