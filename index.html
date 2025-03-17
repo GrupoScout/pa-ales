@@ -336,7 +336,6 @@
 { name: "ÓLEO CALCAREO ESTRELLA S/FRAGANCIA X 500 (TAPA NAR.)", price: 0 },
 { name: "OLEO CALCÁREO BUNNY BABY  X 1000ml ( NUEVOS )", price: 0 },
 { name: "OLEO CALCÁREO BUNNY BABY  X 500 ml ( NUEVOS )", price: 0 },
-{ name: "ALGODONES E HISOPOS", price: 0 },
 { name: "DONCELLA X 70", price: 0 },
 { name: "DONCELLA X 140", price: 0 },
 { name: "DONCELLA X 300", price: 0 },
@@ -465,45 +464,46 @@
       calculadora.push({ Producto: name.toUpperCase(), Unidades: quantity, Precio: price, Total: quantity * price });
       renderCalculadora();
     }
-
-    function printTicket() {
-      const now = new Date();
-      const fecha = now.toLocaleDateString('es-AR');
-      const hora = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: true });
-      const ticketContent = `
-        <div style="width:80mm; border: 2px solid black; padding: 10px; font-family: Arial; font-size: 12px;">
-          <div style="border: 2px solid black; padding: 5px; text-align: center; margin-bottom: 10px;">
-            <b style="font-size: 16px;">FARMACIA PINTAR</b><br>
-            SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>TEL: 44555502 - WHATSAPP: 1153183466<br>
-            <b>COMPROBANTE NO FISCAL</b><br>
-            FECHA: ${fecha} - HORA: ${hora}
-          </div>
-          <div style="border: 2px solid black; padding: 5px; margin-bottom: 10px;">
-            ${calculadora.map(item => `
-              <div style="border-bottom: 1px solid black; margin-bottom: 5px; padding-bottom: 5px;">
-                <b>${item.Producto}</b><br>
-                Cantidad: ${item.Unidades}<br>
-                Precio Unitario: $${item.Precio.toFixed(2)}<br>
-                <b>Precio Total: $${item.Total.toFixed(2)}</b>
-              </div>
-            `).join('')}
-            <div style="text-align: right; margin-top: 10px;">
-              <b>TOTAL: $${calculadora.reduce((sum, item) => sum + item.Total, 0).toFixed(2)}</b>
-            </div>
-          </div>
-          <div style="border: 2px solid black; padding: 5px; text-align: center;">
-            <span style="font-size: 7px;">
-              IMPORTANTE: EL PRECIO ES VÁLIDO POR 12HS.<br>
-              PASADAS LAS 12HS, EL PRECIO PODRÍA VARIAR Y SE APLICARÁ LA DIFERENCIA.<br>
-              CUALQUIER RECLAMO SOLO CON TICKET EN MANO.<br>
-            </span>
-            <hr style="border-top: 1px dashed black;">
-            GRACIAS POR SU COMPRA
-          </div>
-        </div>`;
-      document.getElementById("ticketContainer").innerHTML = ticketContent;
-      window.print();
-    }
+function printTicket() {
+  const now = new Date();
+  const fecha = now.toLocaleDateString('es-AR');
+  const hora = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: true });
+  const ticketContent = `
+    <div style="width:80mm; border: 2px solid black; padding: 12px; font-family: Arial; font-size: 13px;">
+      <div style="border: 2px solid black; padding: 6px; text-align: center; margin-bottom: 10px;">
+        <b style="font-size: 18px;">FARMACIA PINTAR</b><br>
+        SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>
+        TEL: 44555502 - WHATSAPP: 1153183466<br>
+        <b>COMPROBANTE NO FISCAL</b><br>
+        FECHA: ${fecha} - HORA: ${hora}<br>
+        <b>TURNOS: www.turnosdefarmacias.info</b>
+      </div>
+      <div style="border: 2px solid black; padding: 6px; margin-bottom: 10px;">
+        ${calculadora.map(item => `
+          <div style="border-bottom: 1px solid black; margin-bottom: 5px; padding-bottom: 5px;">
+            <b>${item.Producto}</b><br>
+            Cantidad: ${item.Unidades}<br>
+            Precio Unitario: $${item.Precio.toFixed(2)}<br>
+            <b>Total: $${item.Total.toFixed(2)}</b>
+          </div>`).join('')}
+        <div style="text-align: right; margin-top: 10px;">
+          <b>TOTAL: $${calculadora.reduce((sum, item) => sum + item.Total, 0).toFixed(2)}</b>
+        </div>
+      </div>
+      <div style="border: 2px solid black; padding: 6px; text-align: center;">
+        <span style="font-size: 9px;">
+          IMPORTANTE: EL PRECIO ES VÁLIDO POR 12HS.<br>
+          PASADAS LAS 12HS, EL PRECIO PODRÍA VARIAR Y SE APLICARÁ LA DIFERENCIA.<br>
+          CUALQUIER RECLAMO SOLO CON TICKET EN MANO.
+        </span>
+        <hr style="border-top: 1px dashed black;">
+        <b>¡GRACIAS POR SU COMPRA!</b>
+      </div>
+    </div>`;
+  document.getElementById("ticketContainer").innerHTML = ticketContent;
+  window.print();
+}
+    
 
     function toUpperCaseInput(input) {
       input.value = input.value.toUpperCase();
