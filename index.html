@@ -132,7 +132,7 @@
   <div id="ticketContainer"></div>
 
   <script>
-    const products = [
+const products = [
  { name: "HUGGIES CLASSIC PEQUEÑO X 30", price: 0 },
   { name: "HUGGIES CLASSIC TRIPLE PROT. M(68) G(60) XG(52) XXG(50)", price: 0 },
   { name: "HUGGIES PROTECT PLUS AHORRO PEQ X 50", price: 0 },
@@ -532,9 +532,12 @@
       }
     }
 
+    // ✅ Event listeners - AHORA EN EL LUGAR CORRECTO
     document.getElementById("searchBar").addEventListener("input", loadProducts);
     document.getElementById("toggleCalcBtn").addEventListener("click", toggleCalculator);
     document.getElementById("loginBtn").addEventListener("click", loginPrompt);
+
+    // Carga inicial
     loadProducts();
   </script>
 </body>
