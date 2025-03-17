@@ -1,6 +1,5 @@
 console.log("Script cargado correctamente");
 
-// Acá pegá tu array de productos:
 const products = [
  const products = [
  { name: "HUGGIES CLASSIC PEQUEÑO X 30", price: 0 },
@@ -354,7 +353,7 @@ function startInactivityTimer() {
     isAdmin = false;
     alert("Sesión cerrada por inactividad");
     loadProducts();
-  }, 900000); // 15 minutos
+  }, 900000);
 }
 
 function editProduct(index) {
@@ -369,4 +368,3 @@ document.getElementById("searchBar").addEventListener("input", loadProducts);
 document.getElementById("toggleCalcBtn").addEventListener("click", toggleCalculator);
 document.getElementById("loginBtn").addEventListener("click", loginPrompt);
 loadProducts();
-
