@@ -362,7 +362,8 @@
       container.innerHTML = '';
       const query = document.getElementById('searchBar').value.toLowerCase();
       products.forEach((product, index) => {
-        if (product.name.toLowerCase().includes(query)) {
+        if (!query || product.name.toLowerCase().includes(query)) {
+
           const div = document.createElement('div');
           div.className = 'product';
           const displayPrice = (product.price * 1.4).toFixed(2);
