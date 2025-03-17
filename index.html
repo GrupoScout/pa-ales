@@ -85,6 +85,9 @@
       margin-top: 10px;
       font-weight: bold;
     }
+    .visible {
+      display: block !important;
+    }
   </style>
 </head>
 <body>
@@ -409,7 +412,7 @@ const products = [
 
     function toggleCalculator() {
       const container = document.getElementById("calculadora-container");
-      container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
+      container.classList.toggle("visible");
     }
 
     function addToCalculadora(nombre, precio) {
@@ -532,7 +535,7 @@ const products = [
       }
     }
 
-    // ✅ Event listeners - AHORA EN EL LUGAR CORRECTO
+    // Event listeners
     document.getElementById("searchBar").addEventListener("input", loadProducts);
     document.getElementById("toggleCalcBtn").addEventListener("click", toggleCalculator);
     document.getElementById("loginBtn").addEventListener("click", loginPrompt);
@@ -542,3 +545,4 @@ const products = [
   </script>
 </body>
 </html>
+
