@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmacia Pintar</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #searchBar {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #products {
+      margin-top: 20px;
+    }
+    .product {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    #calculator {
+      display: none;
+      border: 2px solid #000;
+      padding: 10px;
+      margin-top: 20px;
+      background-color: #fff;
+    }
+    .ticket {
+      font-family: monospace;
+      font-size: 14px;
+      border: 1px solid #000;
+      padding: 10px;
+      margin-top: 20px;
+      width: 300px;
+      background-color: #fff;
+    }
+    .ticket-header, .ticket-footer {
+      text-align: center;
+      border-bottom: 1px solid #000;
+      margin-bottom: 5px;
+    }
+    .ticket-product {
+      border-top: 1px solid #000;
+      margin-top: 5px;
+      padding-top: 5px;
+    }
+    .small-text {
+      font-size: 10px;
+      color: gray;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <input type="text" id="searchBar" placeholder="Buscar producto...">
+    <div>
+      <button onclick="toggleCalculator()">Calculadora</button>
+      <button onclick="loginPrompt()">Iniciar sesión</button>
+    </div>
+  </header>
+
+  <div id="products"></div>
+  <div id="calculator">
+    <h2>Calculadora</h2>
+    <div id="calculatorItems"></div>
+    <h3 id="totalAmount">TOTAL: $0.00</h3>
+    <button onclick="printTicket()">Imprimir</button>
+  </div>
+  <div id="ticketContainer"></div>
+
+  <script>
+    // Aquí se pegará el contenido JavaScript completo
+  </script>
+</body>
+</html>
