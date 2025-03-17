@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,53 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Farmacia Pintar</title>
   <style>
+    :root {
+      --primary-color: #9BC6B8; /* Verde agua */
+      --secondary-color: #DCEAE6; /* Fondo claro */
+      --accent-color: #678D7F; /* Verde más oscuro */
+      --text-color: #2E4D45;
+      --button-color: #81A69B;
+    }
+
     body {
       font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
+      background-color: var(--secondary-color);
       margin: 0;
       padding: 20px;
+      color: var(--text-color);
     }
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background-color: var(--primary-color);
+      padding: 10px 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     #searchBar {
       width: 300px;
       padding: 10px;
       font-size: 16px;
+      border: 1px solid var(--accent-color);
+      border-radius: 8px;
+    }
+    header button {
+      background-color: var(--button-color);
+      border: none;
+      padding: 10px 15px;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+    header button:hover {
+      background-color: var(--accent-color);
     }
     #products {
       margin-top: 20px;
     }
     .product {
-      border: 1px solid #ccc;
-      padding: 10px;
+      border: 1px solid var(--accent-color);
+      padding: 12px;
       margin-bottom: 10px;
+      border-radius: 10px;
+      background-color: white;
     }
     #calculator {
       display: none;
-      border: 2px solid #000;
-      padding: 10px;
+      border: 2px solid var(--accent-color);
+      padding: 15px;
       margin-top: 20px;
-      background-color: #fff;
+      background-color: white;
+      border-radius: 10px;
     }
     .ticket {
       font-family: monospace;
       font-size: 14px;
-      border: 1px solid #000;
+      border: 1px solid var(--accent-color);
       padding: 10px;
       margin-top: 20px;
       width: 300px;
-      background-color: #fff;
+      background-color: white;
+      border-radius: 10px;
     }
     .ticket-header, .ticket-footer {
       text-align: center;
-      border-bottom: 1px solid #000;
+      border-bottom: 1px solid var(--accent-color);
       margin-bottom: 5px;
     }
     .ticket-product {
-      border-top: 1px solid #000;
+      border-top: 1px solid var(--accent-color);
       margin-top: 5px;
       padding-top: 5px;
     }
@@ -67,8 +97,8 @@
   <header>
     <input type="text" id="searchBar" placeholder="Buscar producto...">
     <div>
-      <button onclick="toggleCalculator()">Calculadora</button>
-      <button onclick="loginPrompt()">Iniciar sesión</button>
+      <button id="toggleCalcBtn">Calculadora</button>
+      <button id="loginBtn">Iniciar sesión</button>
     </div>
   </header>
 
@@ -82,7 +112,7 @@
   <div id="ticketContainer"></div>
 
   <script>
- const products = [
+    const products = [
  { name: "HUGGIES CLASSIC PEQUEÑO X 30", price: 0 },
   { name: "HUGGIES CLASSIC TRIPLE PROT. M(68) G(60) XG(52) XXG(50)", price: 0 },
   { name: "HUGGIES PROTECT PLUS AHORRO PEQ X 50", price: 0 },
@@ -322,6 +352,121 @@
   { name: "PAULA CAHEN D ANVERS ALMA 60ML C/VAPORIZADOR", price: 0 },
   { name: "PAULA CAHEN D ANVERS LUZ 60 ML C/VAPORIZADOR", price: 0 }
     ];
- </script>
+
+    const cart = {};
+    let isAdmin = false;
+    let inactivityTimer;
+
+    function loadProducts() {
+      const container = document.getElementById('products');
+      container.innerHTML = '';
+      const query = document.getElementById('searchBar').value.toLowerCase();
+      products.forEach((product, index) => {
+        if (product.name.toLowerCase().includes(query)) {
+          const div = document.createElement('div');
+          div.className = 'product';
+          const displayPrice = (product.price * 1.4).toFixed(2);
+          div.innerHTML = `
+            <strong>${product.name}</strong><br>
+            Precio: $${displayPrice}<br>
+            <button onclick="addToCart(${index})">Agregar a la cuenta</button>
+            ${isAdmin ? `<button onclick="editProduct(${index})">Editar</button>` : ''}
+          `;
+          container.appendChild(div);
+        }
+      });
+    }
+
+    function addToCart(index) {
+      if (isAdmin) return alert("Cierre sesión para operar.");
+      const product = products[index];
+      const id = product.name;
+      if (!cart[id]) cart[id] = { ...product, quantity: 0 };
+      cart[id].quantity++;
+      updateCalculator();
+    }
+
+    function updateCalculator() {
+      const container = document.getElementById('calculatorItems');
+      container.innerHTML = '';
+      let total = 0;
+      for (let id in cart) {
+        const item = cart[id];
+        const unit = (item.price * 1.4).toFixed(2);
+        const subtotal = (item.quantity * item.price * 1.4).toFixed(2);
+        total += parseFloat(subtotal);
+        container.innerHTML += `<div><strong>${item.name}</strong><br> Cantidad: ${item.quantity}<br> Precio unitario: $${unit}<br> Precio total: $${subtotal}<br><br></div>`;
+      }
+      document.getElementById('totalAmount').textContent = `TOTAL: $${total.toFixed(2)}`;
+    }
+
+    function toggleCalculator() {
+      const calc = document.getElementById('calculator');
+      calc.style.display = calc.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function printTicket() {
+      const container = document.getElementById('ticketContainer');
+      const now = new Date();
+      const time = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: true });
+      const date = now.toLocaleDateString('es-AR');
+      let ticket = `<div class="ticket"><div class="ticket-header">
+        <strong>FARMACIA PINTAR</strong><br>SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>TEL: 4455502<br>
+        FECHA: ${date} - HORA: ${time}</div><strong style="font-size: 20px;">X</strong><br><small>DOCUMENTO NO VÁLIDO COMO FACTURA FISCAL</small>`;
+      let total = 0;
+      for (let id in cart) {
+        const item = cart[id];
+        const unit = (item.price * 1.4).toFixed(2);
+        const subtotal = (item.quantity * item.price * 1.4).toFixed(2);
+        ticket += `<div class="ticket-product">${item.name}<br>Cantidad: ${item.quantity}<br>Precio Unitario: $${unit}<br>Precio Total: $${subtotal}</div>`;
+        total += parseFloat(subtotal);
+      }
+      ticket += `<h3>TOTAL: $${total.toFixed(2)}</h3><div class="small-text">IMPORTANTE: EL PRECIO ES VÁLIDO POR 12HS.<br>PASADAS LAS 12HS, EL PRECIO PODRÍA VARIAR.<br>RECLAMOS SOLO CON TICKET EN MANO.</div><div class="ticket-footer">GRACIAS POR SU COMPRA<br><a href="https://www.turnosdefarmacias.info">turnosdefarmacias.info</a></div></div>`;
+      container.innerHTML = ticket;
+      window.print();
+    }
+
+    function loginPrompt() {
+      if (isAdmin) {
+        isAdmin = false;
+        clearTimeout(inactivityTimer);
+        alert("Sesión cerrada");
+        loadProducts();
+        return;
+      }
+      const user = prompt("Usuario:");
+      const pass = prompt("Contraseña:");
+      if (user === "259" && pass === "emi2003") {
+        isAdmin = true;
+        alert("Sesión iniciada como editor");
+        startInactivityTimer();
+        loadProducts();
+      } else {
+        alert("Usuario o contraseña incorrectos");
+      }
+    }
+
+    function startInactivityTimer() {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        isAdmin = false;
+        alert("Sesión cerrada por inactividad");
+        loadProducts();
+      }, 600000);
+    }
+
+    function editProduct(index) {
+      const newPrice = prompt("Ingrese nuevo precio base:", products[index].price);
+      if (newPrice) {
+        products[index].price = parseFloat(newPrice);
+        loadProducts();
+      }
+    }
+
+    document.getElementById('searchBar').addEventListener('input', loadProducts);
+    document.getElementById('toggleCalcBtn').addEventListener('click', toggleCalculator);
+    document.getElementById('loginBtn').addEventListener('click', loginPrompt);
+    loadProducts();
+  </script>
 </body>
 </html>
