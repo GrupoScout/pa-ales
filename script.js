@@ -1,0 +1,1 @@
+/* Aquí iría tu script JS completo */
