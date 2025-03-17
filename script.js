@@ -1,12 +1,8 @@
-
-// Código completo pegado aquí como ejemplo resumido para evitar que se corte por longitud.
-// Se puede pegar el contenido entero previamente enviado si el usuario lo necesita completo.
-
-// Aquí va TODO el JavaScript (products array, funciones, etc.)
-// Por ejemplo:
 console.log("Script cargado correctamente");
+
+// Acá pegá tu array de productos:
 const products = [
-  const products = [
+ const products = [
  { name: "HUGGIES CLASSIC PEQUEÑO X 30", price: 0 },
   { name: "HUGGIES CLASSIC TRIPLE PROT. M(68) G(60) XG(52) XXG(50)", price: 0 },
   { name: "HUGGIES PROTECT PLUS AHORRO PEQ X 50", price: 0 },
@@ -246,7 +242,6 @@ const products = [
   { name: "PAULA CAHEN D ANVERS ALMA 60ML C/VAPORIZADOR", price: 0 },
   { name: "PAULA CAHEN D ANVERS LUZ 60 ML C/VAPORIZADOR", price: 0 }
     ];
-
 ];
 
 const cart = {};
@@ -359,7 +354,7 @@ function startInactivityTimer() {
     isAdmin = false;
     alert("Sesión cerrada por inactividad");
     loadProducts();
-  }, 900000);
+  }, 900000); // 15 minutos
 }
 
 function editProduct(index) {
